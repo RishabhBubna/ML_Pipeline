@@ -207,6 +207,8 @@ marimo/_lsp/
 __marimo__/
 
 # my files
-.data/
-.ieee-fraud-detection/
-.Basic nn model.ipynb
+data/
+ieee-fraud-detection/
+Basic nn model.ipynb
+model/
+metadata/
