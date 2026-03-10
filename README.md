@@ -1,5 +1,7 @@
 # Fraud Detection using Unsupervised Learning
 
+[![View Notebook](https://img.shields.io/badge/Jupyter-View_Notebook-orange?logo=Jupyter)](https://github.com/RishabhBubna/ML_Pipeline/blob/main/IEEE_notebook.ipynb)
+
 Unsupervised anomaly detection on the IEEE-CIS Fraud Detection dataset using a Variational Autoencoder (VAE) and Isolation Forest ensemble. No fraud labels are used during training.
 
 ---
@@ -150,3 +152,7 @@ data loading, cleaning, EDA, preprocessing, model training and evaluation in ord
 ## Validation
 
 As an additional sanity check, COPOD (Copula-Based Outlier Detection) was run on the same features with no hyperparameter tuning, achieving AUROC 0.7181 and AP 0.0720. Three fundamentally different algorithms independently finding fraud signal in the same range confirms the preprocessing pipeline is sound and results are not an artifact of data leakage.
+
+---
+
+Built by Rishabh Bubna — [LinkedIn](https://www.linkedin.com/in/dr-rishabh-bubna-304bb3172/)
