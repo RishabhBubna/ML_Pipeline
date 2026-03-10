@@ -209,3 +209,6 @@ __marimo__/
 # my files
 data/
 ieee-fraud-detection/
+
+# Windows Zone Identifier files
+*:Zone.Identifier
