@@ -25,39 +25,44 @@ import json
 ## Setting seed 
 np.random.seed(26)
 
-## logging configuration
-logger = logging.getLogger("data_preprocessing")
-logger.setLevel(logging.DEBUG)
+# ## logging configuration
+# logger = logging.getLogger("data_preprocessing")
+# logger.setLevel(logging.DEBUG)
 
-console_handler = logging.StreamHandler()
-console_handler.setLevel(logging.DEBUG)
+# console_handler = logging.StreamHandler()
+# console_handler.setLevel(logging.DEBUG)
 
-file_handler = logging.FileHandler("preprocessing_errors.log")
-file_handler.setLevel(logging.ERROR)
+# file_handler = logging.FileHandler("preprocessing_errors.log")
+# file_handler.setLevel(logging.ERROR)
 
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-console_handler.setFormatter(formatter)
-file_handler.setFormatter(formatter)
+# formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+# console_handler.setFormatter(formatter)
+# file_handler.setFormatter(formatter)
 
-logger.addHandler(console_handler)
-logger.addHandler(file_handler)
+# logger.addHandler(console_handler)
+# logger.addHandler(file_handler)
 
-def load_params(params_path: str)-> dict:
-    '''Load the parameters from the params.yaml file'''
-    try:
-        with open(params_path, "r") as f:
-            params = yaml.safe_load(f)
-        logger.debug("Parameters were loaded from %s", params_path)
-        return params
-    except FileNotFoundError:
-        logger.error("File not found: %s", params_path)
-        raise
-    except yaml.YAMLError as e:
-        logger.error("YAML error: %s", e)
-        raise
-    except Exception as e:
-        logger.error("Unexpected error: %s", e)
-        raise
+from utils import load_params, setup_logger
+
+logger = setup_logger("data_preprocessing","preprocessing_error.log")
+
+
+# def load_params(params_path: str)-> dict:
+#     '''Load the parameters from the params.yaml file'''
+#     try:
+#         with open(params_path, "r") as f:
+#             params = yaml.safe_load(f)
+#         logger.debug("Parameters were loaded from %s", params_path)
+#         return params
+#     except FileNotFoundError:
+#         logger.error("File not found: %s", params_path)
+#         raise
+#     except yaml.YAMLError as e:
+#         logger.error("YAML error: %s", e)
+#         raise
+#     except Exception as e:
+#         logger.error("Unexpected error: %s", e)
+#         raise
 
 def data_splitting(df: pd.DataFrame, test_size: float)-> tuple:
     '''Chronologically splitting the data into train and test set'''
