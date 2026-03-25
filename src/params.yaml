@@ -18,3 +18,7 @@ train_iso:
   contamination: 0.035
   max_feature: 0.5
   random_state: 26
+
+model_evaluation:
+  vae_w: 0.9
+  iso_w: 0.1

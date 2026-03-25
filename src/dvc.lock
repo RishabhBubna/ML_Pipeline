@@ -74,6 +74,7 @@ stages:
         train_vae.beta: 1.0
         train_vae.epoch: 50
         train_vae.lr: 0.0001
+        train_vae.seed: 26
         train_vae.warmup_epochs: 5
         train_vae.z_dim: 3
     outs:
@@ -103,3 +104,47 @@ stages:
       hash: md5
       md5: 657b1aeaadd284d4b22fb0d69e319a1e
       size: 694985
+  model_evaluation:
+    cmd: PYTHONPATH=. python model/model_evaluation.py
+    deps:
+    - path: model/VAE.py
+      hash: md5
+      md5: a2df01b32d54844ade319940bca5ed4d
+      size: 3217
+    - path: model/best_vae.pt
+      hash: md5
+      md5: b1cf8bb0f43a64baade85ca6509bd951
+      size: 104645
+    - path: model/iso_forest.pkl
+      hash: md5
+      md5: 657b1aeaadd284d4b22fb0d69e319a1e
+      size: 694985
+    - path: model/model_evaluation.py
+      hash: md5
+      md5: 761fb5f733eb7d50540c882e7fc2765d
+      size: 10367
+    - path: processedData/preprocessed/testset_Iso.npy
+      hash: md5
+      md5: 96123dceb4f9a8b8f2b32442b741668f
+      size: 78423840
+    - path: processedData/preprocessed/testset_VAE.npy
+      hash: md5
+      md5: c6fd37c52d074b9fb37a7cf10717254c
+      size: 69447632
+    - path: processedData/preprocessed/testset_label.npy
+      hash: md5
+      md5: 6208e640cb6ce7854c15b784d26bfac7
+      size: 944992
+    params:
+      params.yaml:
+        model_evaluation.iso_w: 0.1
+        model_evaluation.vae_w: 0.9
+        train_vae.batch_size: 2048
+        train_vae.seed: 26
+        train_vae.z_dim: 3
+    outs:
+    - path: Metrics/Plots
+      hash: md5
+      md5: 252194f5ee0da57fbec1e50cbc843227.dir
+      size: 50502
+      nfiles: 1

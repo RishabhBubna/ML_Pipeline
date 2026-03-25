@@ -36,6 +36,7 @@ stages:
     - train_vae.z_dim
     - train_vae.lr
     - train_vae.warmup_epochs
+    - train_vae.seed
     outs:
     - model/best_vae.pt
 
@@ -51,3 +52,22 @@ stages:
     - train_iso.random_state
     outs:
     - model/iso_forest.pkl
+
+  model_evaluation:
+    cmd: PYTHONPATH=. python model/model_evaluation.py
+    deps:
+    - processedData/preprocessed/testset_VAE.npy
+    - processedData/preprocessed/testset_label.npy
+    - model/VAE.py
+    - processedData/preprocessed/testset_Iso.npy
+    - model/model_evaluation.py
+    - model/best_vae.pt
+    - model/iso_forest.pkl
+    params:
+    - train_vae.batch_size
+    - train_vae.z_dim
+    - train_vae.seed
+    - model_evaluation.vae_w
+    - model_evaluation.iso_w
+    outs:
+    - Metrics/Plots
