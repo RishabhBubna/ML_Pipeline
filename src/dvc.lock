@@ -54,8 +54,8 @@ stages:
       size: 3217
     - path: model/train_vae.py
       hash: md5
-      md5: 0cb855b14391c798ef632e62174713f0
-      size: 5762
+      md5: eaab3ec693b40ee174a4744119a5f090
+      size: 5811
     - path: processedData/preprocessed/testset_VAE.npy
       hash: md5
       md5: c6fd37c52d074b9fb37a7cf10717254c
@@ -81,3 +81,25 @@ stages:
       hash: md5
       md5: b1cf8bb0f43a64baade85ca6509bd951
       size: 104645
+  train_iso:
+    cmd: PYTHONPATH=. python model/train_iso.py
+    deps:
+    - path: model/train_iso.py
+      hash: md5
+      md5: ed999921888ce39c1f87a53d2d70d694
+      size: 2240
+    - path: processedData/preprocessed/trainset_Iso.npy
+      hash: md5
+      md5: dd9f44e9a206b12d82e7ec4f8bd46cdc
+      size: 302671912
+    params:
+      params.yaml:
+        train_iso.contamination: 0.035
+        train_iso.max_feature: 0.5
+        train_iso.n_estimator: 50
+        train_iso.random_state: 26
+    outs:
+    - path: model/iso_forest.pkl
+      hash: md5
+      md5: 657b1aeaadd284d4b22fb0d69e319a1e
+      size: 694985

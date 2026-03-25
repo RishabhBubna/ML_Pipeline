@@ -18,7 +18,7 @@ from model.VAE import MyVAE, Frauddataset, vae_loss_function
 
 from utils import load_params, setup_logger
 
-logger = setup_logger("trainning_VAE", "VAE_error.log")
+logger = setup_logger("training_VAE", "VAE_error.log")
 
 
 
@@ -145,9 +145,10 @@ def main():
     try:
 
         params = load_params(params_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"../params.yaml"))
-        torch.manual_seed(26)
-        torch.cuda.manual_seed(26)
-        np.random.seed(26)
+        seed = params["train_vae"]["seed"]
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed(seed)
+        np.random.seed(seed)
         training_loop(params)
 
     except Exception as e:

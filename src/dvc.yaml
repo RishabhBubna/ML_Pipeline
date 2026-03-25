@@ -38,3 +38,16 @@ stages:
     - train_vae.warmup_epochs
     outs:
     - model/best_vae.pt
+
+  train_iso:
+    cmd: PYTHONPATH=. python model/train_iso.py
+    deps:
+    - processedData/preprocessed/trainset_Iso.npy
+    - model/train_iso.py
+    params:
+    - train_iso.n_estimator
+    - train_iso.contamination
+    - train_iso.max_feature
+    - train_iso.random_state
+    outs:
+    - model/iso_forest.pkl
