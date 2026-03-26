@@ -16,7 +16,7 @@ import json
 ## absolute path for data
 from config import TEST_TRANSACTION_PATH, TEST_IDENTITY_PATH
 from utils import setup_logger
-from data.data_ingestion import (clean_transaction_table,clean_identity_table,merge_df,apply_log_transforms)
+from data.data_ingestion import (extract_temporal_features,clean_id30,clean_id31,bin_resolution,clean_device_info,merge_df)
 from model.model_evaluation import (evaluate_vae,evaluate_iso)
 from model.VAE import MyVAE
 
@@ -25,14 +25,16 @@ logger = setup_logger("prediction", "prediction_error.log")
 def load_data(test_data_path: str, column_list)-> pd.DataFrame:
     '''loads data with relevant columns'''
     try:
-        df = pd.read_csv(test_data_path,usecols=column_list)
-        logger.debug("data loaded from: %s",test_data_path)
+        available_cols = pd.read_csv(test_data_path, nrows=0).columns.tolist()
+        cols_to_load = [c for c in column_list if c in available_cols]
+        df = pd.read_csv(test_data_path, usecols=cols_to_load, nrows=20)
+        logger.debug("data loaded from: %s", test_data_path)
         return df
     except pd.errors.ParserError as e:
         logger.error("Failed to parse CSV file: %s", e)
         raise
     except Exception as e:
-        logger.error("Unexpected error encountered while loading sample data: %s", e)
+        logger.error("Unexpected error encountered while loading data: %s", e)
         raise
 
 def align_columns(df: pd.DataFrame, column_list: list) -> pd.DataFrame:
@@ -110,13 +112,16 @@ def main():
         df_i = load_data(test_identity_path, identity_list)
 
         # Clean
-        df_t = clean_transaction_table(df_t)
-        transaction_list.extend(["hours","day_of_week"])
-        df_i = clean_identity_table(df_i)
-
+        df_t = extract_temporal_features(df_t)
+        transaction_list.extend(["hour","day_of_week"])
         # Align columns
         df_t = align_columns(df_t, transaction_list)
         df_i = align_columns(df_i, identity_list)
+
+        df_i["id_30"] = df_i["id_30"].apply(clean_id30)
+        df_i["id_31"] = df_i["id_31"].apply(clean_id31)
+        df_i["id_33"] = df_i["id_33"].apply(bin_resolution)
+        df_i["DeviceInfo"] = df_i["DeviceInfo"].apply(clean_device_info)
 
         # Merge
         df = merge_df(df_t, df_i)
