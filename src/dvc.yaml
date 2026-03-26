@@ -7,7 +7,7 @@ stages:
     - data_ingestion.no_rows
     outs:
     - processedData/raw/full_dataset.csv
-    - Metadata/
+    - Metadata/column_name.json
 
   data_preprocessing:
     cmd: PYTHONPATH=. python data/data_preprocessing.py
@@ -19,6 +19,7 @@ stages:
     outs:
     - processedData/preprocessed/
     - model/pipeline/
+    - Metadata/feature_name.json
     
 
   train_vae:
@@ -73,6 +74,7 @@ stages:
     - model_evaluation.iso_w
     outs:
     - Metrics/Plots
+    - Metadata/experiment_info.json
 
   model_registry:
     cmd: PYTHONPATH=. python model/model_registry.py

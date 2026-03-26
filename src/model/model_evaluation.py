@@ -96,8 +96,8 @@ def evaluate_vae(model, test_dataloader: DataLoader, device):
         reconstruction_errors = []
 
         with torch.no_grad():
-            for X, y in test_dataloader:
-                X = X.to(device)
+            for batch in test_dataloader:
+                X = batch[0].to(device)
                 reconstructed, _, _ = model(X)
                 errors = torch.mean((X - reconstructed) ** 2, dim=1)
         
@@ -172,7 +172,7 @@ def log_metrics(vae_w: float, iso_w: float, vae_normalized, iso_normalized, test
 def save_ensemble_info(run_id: str, vae_path: str, iso_path: str, pipeline_path: str,file_path: str)-> None:
     '''Save run_id and model path to a JSON file'''
     try:
-        logger.debug("")
+        
         model_info = {"run_id": run_id, "VAE_path": vae_path, "ISO_path": iso_path,"pipeline_path": pipeline_path}
 
         with open(file_path, 'w') as f:

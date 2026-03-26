@@ -368,7 +368,8 @@ def apply_log_transforms(df: pd.DataFrame)-> tuple:
     try:
         # get the numerical columns
         num_col = df.select_dtypes(include="number").columns.tolist()
-        num_col.remove("isFraud")
+        if "isFraud" in num_col:
+            num_col.remove("isFraud")
         # skewed columns with minimum > 0
         skewness = df[num_col].skew().sort_values(ascending=False)
         to_log = skewness[skewness > 1.0].index.tolist()
@@ -395,10 +396,10 @@ def save_dataset(df: pd.DataFrame, data_path: str) -> None:
         logger.error("Dataset saving failed: %s", e)
         raise
 
-def save_column_name(column_list: list, log_list: list, file_path: str):
+def save_column_name(t_list: list,i_list, log_list: list, file_path: str):
     '''Save columns name for serving time'''
     try:
-        feature_info = {"columns": column_list, "log_list": log_list}
+        feature_info = {"transaction_list": t_list,"Identity_list": i_list, "log_list": log_list}
 
         with open(file_path, "w") as f:
             json.dump(feature_info,f)
@@ -417,21 +418,20 @@ def main():
         # Load the transaction dataset
         df_t = load_transaction_data(RAW_TRANSACTION_PATH, no_rows = no_rows)
         df_t = clean_transaction_table(df_t)
-
+        t_list = [c for c in df_t.columns if c not in ["isFraud", "hour", "day_of_week"]]
         # Load the identity dataset
         df_i = load_identity_Data(RAW_IDENTITY_PATH)
         df_i = clean_identity_table(df_i)
-
+        i_list = df_i.columns.to_list()
         # Merge the table
         df = merge_df(df_t, df_i)
-        column_list = df.columns.to_list()
         # Log transform
         df,to_log = apply_log_transforms(df)
 
         save_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"../Metadata")
         os.makedirs(save_file_path, exist_ok=True)
         
-        save_column_name(column_list= column_list, log_list = to_log, file_path= os.path.join(save_file_path,"column_name.json"))
+        save_column_name(t_list=t_list,i_list=i_list, log_list = to_log, file_path= os.path.join(save_file_path,"column_name.json"))
 
         
         # save dataset

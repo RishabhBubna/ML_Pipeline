@@ -5,17 +5,16 @@ stages:
     deps:
     - path: data/data_ingestion.py
       hash: md5
-      md5: 0109a380026bf90098d1aadf680a6e85
-      size: 17882
+      md5: 5f554656396358424200a2a3e81f172b
+      size: 18037
     params:
       params.yaml:
         data_ingestion.no_rows: 50000
     outs:
-    - path: Metadata/
+    - path: Metadata/column_name.json
       hash: md5
-      md5: 02941a565198a33f0f6b52f7ba565056.dir
-      size: 817
-      nfiles: 1
+      md5: c409539170fd68c77322e596337b0924
+      size: 845
     - path: processedData/raw/full_dataset.csv
       hash: md5
       md5: 3bbc097358c158a1dca93d08cf28c3b7
@@ -25,7 +24,7 @@ stages:
     deps:
     - path: data/data_preprocessing.py
       hash: md5
-      md5: 90fa80d50219d39b685ec8e1ef5ab8c9
+      md5: 2f1e557abaa3f7ae876297f12794a41c
       size: 7330
     - path: processedData/raw/full_dataset.csv
       hash: md5
@@ -35,6 +34,10 @@ stages:
       params.yaml:
         data_preprocessing.test_size: 0.2
     outs:
+    - path: Metadata/feature_name.json
+      hash: md5
+      md5: f206531670fd288f060a9909205d94fb
+      size: 6072
     - path: model/pipeline/
       hash: md5
       md5: f18d610dba6b9548500ea5a84353c252.dir
@@ -121,8 +124,8 @@ stages:
       size: 694985
     - path: model/model_evaluation.py
       hash: md5
-      md5: 6aa12ceee3b6f24b44e7b3da2ec7348e
-      size: 10654
+      md5: 4f66f9b9004f7598a3afd7dc845be132
+      size: 10646
     - path: model/pipeline/transform_rule_Iso.pkl
       hash: md5
       md5: 082f1d71b1997c0ddc3600a445fd7113
@@ -151,6 +154,10 @@ stages:
         train_vae.seed: 26
         train_vae.z_dim: 3
     outs:
+    - path: Metadata/experiment_info.json
+      hash: md5
+      md5: 3fc8ab6fd9e9fe71997b4c30d2df8a8e
+      size: 363
     - path: Metrics/Plots
       hash: md5
       md5: 252194f5ee0da57fbec1e50cbc843227.dir
@@ -161,7 +168,7 @@ stages:
     deps:
     - path: Metadata/experiment_info.json
       hash: md5
-      md5: 042e01a296444edae84b3a00f7fd87a6
+      md5: 3fc8ab6fd9e9fe71997b4c30d2df8a8e
       size: 363
     - path: model/model_registry.py
       hash: md5
