@@ -27,7 +27,7 @@ def load_data(test_data_path: str, column_list)-> pd.DataFrame:
     try:
         available_cols = pd.read_csv(test_data_path, nrows=0).columns.tolist()
         cols_to_load = [c for c in column_list if c in available_cols]
-        df = pd.read_csv(test_data_path, usecols=cols_to_load, nrows=20)
+        df = pd.read_csv(test_data_path, usecols=cols_to_load)
         logger.debug("data loaded from: %s", test_data_path)
         return df
     except pd.errors.ParserError as e:
@@ -90,10 +90,10 @@ def main():
     try:
         root_dir = os.path.dirname(os.path.abspath(__file__))
 
-        # Load params
+        # params
         vae_w = 0.9
         iso_w = 0.1
-        threshold = 0.1993
+        threshold = 0.937
         z_dim = 3
         batch_size = 2048
 
