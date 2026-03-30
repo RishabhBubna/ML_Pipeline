@@ -45,9 +45,11 @@ jobs:
         run: |
           echo "=== model/ ===" 
           ls src/model/
+          echo "=== model/data/ ==="
+          ls src/model/data/
           echo "=== model/pipeline/ ==="
           ls src/model/pipeline/
-          
+
       - name: Run tests
         run: |
           cd src
