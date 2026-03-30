@@ -1,10 +1,10 @@
 # Fraud Detection using Unsupervised Learning
 
 [![View Notebook](https://img.shields.io/badge/Jupyter-View_Notebook-orange?logo=Jupyter)](https://github.com/RishabhBubna/ML_Pipeline/blob/main/IEEE_notebook.ipynb)
-[![CI](https://github.com/RishabhBubna/fraud-detection-unsupervised/actions/workflows/ci.yml/badge.svg)](https://github.com/RishabhBubna/fraud-detection-unsupervised/actions/workflows/ci.yml)
+[![CI](https://github.com/RishabhBubna/fraud-detection-unsupervised/actions/workflows/ci.yml/badge.svg)](https://github.com/RishabhBubna/fraud-detection-unsupervised/actions/workflows/cicd.yml)
 [![Docker](https://img.shields.io/badge/Docker-rishabhbubna47%2Ffraud--detection-blue?logo=docker)](https://hub.docker.com/r/rishabhbubna47/fraud-detection)
 
-Unsupervised anomaly detection on the IEEE-CIS Fraud Detection dataset using a Variational Autoencoder (VAE) and Isolation Forest ensemble. No fraud labels are used during training. The project includes a full MLOps pipeline — DVC for data and pipeline versioning, MLflow for experiment tracking, FastAPI for inference, Docker for containerization, and GitHub Actions for CI/CD.
+Unsupervised anomaly detection on the IEEE-CIS Fraud Detection dataset using a Variational Autoencoder (VAE) and Isolation Forest ensemble. No fraud labels are used during training. The project includes a full MLOps pipeline, DVC for data and pipeline versioning, MLflow for experiment tracking, FastAPI for inference, Docker for containerization, and GitHub Actions for CI/CD.
 
 ---
 
@@ -17,7 +17,7 @@ Unsupervised anomaly detection on the IEEE-CIS Fraud Detection dataset using a V
 | **Ensemble (0.9/0.1)** | **0.7269** | **0.0904** |
 | Random baseline | 0.500 | 0.034 |
 
-**AP of 0.0904 represents a 166% improvement over the random baseline** — achieved without access to a single fraud label during training.
+**AP of 0.0904 represents a 166% improvement over the random baseline**: achieved without access to a single fraud label during training.
 
 ---
 
@@ -37,9 +37,9 @@ Standard supervised fraud detection requires labeled data, which is expensive to
 
 Two complementary models are combined in a weighted ensemble:
 
-**Variational Autoencoder (VAE)** — learns a compressed latent representation of normal transactions. Fraudulent transactions, being unlike anything seen during training, produce higher reconstruction errors and are flagged as anomalies.
+**Variational Autoencoder (VAE)** : learns a compressed latent representation of normal transactions. Fraudulent transactions, being unlike anything seen during training, produce higher reconstruction errors and are flagged as anomalies.
 
-**Isolation Forest** — exploits the geometric sparsity of anomalies in feature space. Anomalous transactions are easier to isolate and therefore require fewer random partitions to separate from the rest of the data.
+**Isolation Forest** : exploits the geometric sparsity of anomalies in feature space. Anomalous transactions are easier to isolate and therefore require fewer random partitions to separate from the rest of the data.
 
 The two models detect fraud through fundamentally different mechanisms, making their combination more robust than either model alone.
 
@@ -47,19 +47,19 @@ The two models detect fraud through fundamentally different mechanisms, making t
 
 ## Key Design Decisions
 
-**Data quality over model complexity** — early experiments on poorly cleaned data yielded AUROC as low as 0.54. Systematic feature selection through correlation filtering and sparsity checks was the single most impactful improvement, not model architecture.
+**Data quality over model complexity** : early experiments on poorly cleaned data yielded AUROC as low as 0.54. Systematic feature selection through correlation filtering and sparsity checks was the single most impactful improvement, not model architecture.
 
-**Two separate preprocessing pipelines** — V-columns (339 anonymized Vesta features) hurt the VAE by adding noise to the reconstruction objective, but help the Isolation Forest by providing additional dimensions for geometric anomaly isolation. Two preprocessors are fitted independently:
-- `transform_rule_VAE.pkl` — excludes V-columns
-- `transform_rule_Iso.pkl` — includes V-columns
+**Two separate preprocessing pipelines** : V-columns (339 anonymized Vesta features) hurt the VAE by adding noise to the reconstruction objective, but help the Isolation Forest by providing additional dimensions for geometric anomaly isolation. Two preprocessors are fitted independently:
+- `transform_rule_VAE.pkl` : excludes V-columns
+- `transform_rule_Iso.pkl` : includes V-columns
 
-**V-column selection** — V-columns are first filtered by pairwise correlation (threshold 0.75) to remove redundant features, then filtered by sparsity (dominant value > 90%) to remove near-constant columns. This reduces 339 V-columns to ~19 informative ones for the Isolation Forest.
+**V-column selection** : V-columns are first filtered by correlation (threshold 0.75) to remove redundant features, then filtered by sparsity (dominant value > 90%) to remove near-constant columns. This reduces 339 V-columns to ~19 informative ones for the Isolation Forest.
 
-**Time-ordered train/test split** — the dataset is split chronologically (80/20) rather than randomly. The model is trained on earlier transactions and evaluated on later ones, directly simulating real deployment conditions and preventing future data leakage.
+**Time-ordered train/test split** : the dataset is split chronologically (80/20) rather than randomly. The model is trained on earlier transactions and evaluated on later ones, directly simulating real deployment conditions and preventing future data leakage.
 
-**VAE checkpoint saving** — the best VAE checkpoint is saved at the epoch with the highest Average Precision (after a 5-epoch warmup), not the final epoch. The reconstruction loss and anomaly detection performance are decoupled — continued training eventually makes the model too good at reconstructing everything, including fraud.
+**VAE checkpoint saving** : the best VAE checkpoint is saved at the epoch with the highest Average Precision (after a 5-epoch warmup), not the final epoch. The reconstruction loss and anomaly detection performance are decoupled, continued training eventually makes the model too good at reconstructing everything, including fraud.
 
-**Hyperparameter tuning** — both models are tuned via grid search:
+**Hyperparameter tuning** : both models are tuned via grid search:
 - VAE: β ∈ {1.0, 2.0, 5.0}, z_dim ∈ {3, 5, 10}, lr ∈ {1e-3, 5e-4, 1e-4} → best: β=1, z_dim=3, lr=1e-4
 - Isolation Forest: n_estimators ∈ {50, 100, 150, 200}, max_features ∈ {0.5, 0.75, 1.0} → best: n_estimators=50, max_features=0.5
 
@@ -130,14 +130,14 @@ Body: {
 → { "ensemble_score": 0.142, "prediction": 0 }
 ```
 
-- `ensemble_score` — weighted combination of VAE and Isolation Forest anomaly scores (0.9/0.1)
-- `prediction` — 1 if fraud (score > 0.0779), 0 otherwise
-- Identity table is optional — the API handles transactions with or without identity data
+- `ensemble_score` : weighted combination of VAE and Isolation Forest anomaly scores (0.9/0.1)
+- `prediction` : 1 if fraud (score > 0.0779), 0 otherwise
+- Identity table is optional : the API handles transactions with or without identity data
 - Models are loaded once at startup via FastAPI lifespan
 
 ### Docker
 
-The inference app is fully containerized. Models are not pulled from MLflow at inference time — they are copied directly into the image at build time.
+The inference app is fully containerized. Models are not pulled from MLflow at inference time : they are copied directly into the image at build time.
 
 **Pull and run from DockerHub:**
 ```bash
@@ -154,16 +154,16 @@ docker build -t fraud-detection .
 docker run -p 8000:8000 fraud-detection
 ```
 
-### CI/CD — GitHub Actions
+### CI/CD : GitHub Actions
 
 On every push to `main`, the pipeline automatically:
 
-1. **Test job** — installs dependencies, downloads models from S3, runs pytest
-2. **Build job** (only if tests pass) — builds Docker image and pushes to DockerHub
+1. **Test job** : installs dependencies, downloads models from S3, runs pytest
+2. **Build job** (only if tests pass) : builds Docker image and pushes to DockerHub
 
 Tests cover:
 - `/health` endpoint response
-- `/predict` endpoint with a minimal transaction payload — validates response schema and prediction output
+- `/predict` endpoint with a minimal transaction payload : validates response schema and prediction output
 
 ---
 
@@ -267,9 +267,9 @@ docker run -p 8000:8000 rishabhbubna47/fraud-detection:latest
 
 ## Limitations
 
-- **Test set exposure during ensemble tuning** — the ensemble weights (0.9/0.1) were selected by sweeping a grid evaluated on the test set. Strictly speaking, a held-out validation set should be used in production to avoid mild overfitting to the test set.
-- **Unsupervised ceiling** — the supervised upper bound on this dataset is ~0.92 AUROC with labeled data. The gap represents the information value of fraud labels. In a real deployment, even a small labeled dataset would motivate a semi-supervised approach.
-- **Concept drift** — the VAE's reconstruction-based anomaly score is sensitive to shifts in transaction patterns over time. The model would require periodic retraining as fraud patterns evolve.
+- **Test set exposure during ensemble tuning** : the ensemble weights (0.9/0.1) were selected by sweeping a grid evaluated on the test set. Strictly speaking, a held-out validation set should be used in production to avoid mild overfitting to the test set.
+- **Unsupervised ceiling** : the supervised upper bound on this dataset is ~0.92 AUROC with labeled data. The gap represents the information value of fraud labels. In a real deployment, even a small labeled dataset would motivate a semi-supervised approach.
+- **Concept drift** : the VAE's reconstruction-based anomaly score is sensitive to shifts in transaction patterns over time. The model would require periodic retraining as fraud patterns evolve.
 
 ---
 
@@ -279,4 +279,4 @@ As an additional sanity check, COPOD (Copula-Based Outlier Detection) was run on
 
 ---
 
-Built by Rishabh Bubna — [LinkedIn](https://www.linkedin.com/in/dr-rishabh-bubna-304bb3172/)
+Built by Rishabh Bubna : [LinkedIn](https://www.linkedin.com/in/dr-rishabh-bubna-304bb3172/)
