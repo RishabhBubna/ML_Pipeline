@@ -40,6 +40,14 @@ jobs:
           aws s3 cp $ISO_PATH src/model/ --recursive
           aws s3 cp $PIPELINE_PATH src/model/pipeline/ --recursive
       
+
+      - name: Debug model files
+        run: |
+          echo "=== model/ ===" 
+          ls src/model/
+          echo "=== model/pipeline/ ==="
+          ls src/model/pipeline/
+          
       - name: Run tests
         run: |
           cd src
