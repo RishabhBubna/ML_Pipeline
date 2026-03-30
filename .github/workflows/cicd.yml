@@ -17,6 +17,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install PyTorch CPU
+        run: pip install torch==2.10.0 --index-url https://download.pytorch.org/whl/cpu
+
       - name: Install dependencies
         run: pip install -r src/req_inference.txt
 
