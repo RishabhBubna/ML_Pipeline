@@ -171,6 +171,12 @@ Tests cover:
 
 ```
 ├── IEEE_notebook.ipynb             ← original research notebook
+├── requirements_notebook.txt
+├── Report                          ← Notebook results and figures
+|   ├── figures
+|   └── results
+├── metadata                        ← Notebook metadata
+├── model                           ← Notebook models and transform rules
 ├── README.md
 ├── .github/
 │   └── workflows/
