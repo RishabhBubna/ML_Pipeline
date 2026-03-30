@@ -213,10 +213,15 @@ def load_models(vae_path: str, iso_path: str, input_dim: int, z_dim: int) -> tup
     '''Load VAE and ISO models from local paths'''
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    vae_model = MyVAE(input_dim, z_dim).to(device)
-    vae_model.load_state_dict(torch.load(vae_path, map_location=device, weights_only=False))
+    loaded = torch.load(vae_path, map_location=device, weights_only=False)
+    
+    if isinstance(loaded, dict):
+        vae_model = MyVAE(input_dim, z_dim).to(device)
+        vae_model.load_state_dict(loaded)
+    else:
+        vae_model = loaded.to(device)
+    
     vae_model.eval()
-
     iso_model = joblib.load(iso_path)
 
     return vae_model, iso_model, device
