@@ -77,7 +77,6 @@ stages:
     - model_evaluation.iso_w
     outs:
     - Metrics/Plots
-    - Metadata/experiment_info.json
 
   model_registry:
     cmd: PYTHONPATH=. python model/model_registry.py

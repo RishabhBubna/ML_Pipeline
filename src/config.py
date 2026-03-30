@@ -9,4 +9,4 @@ RAW_IDENTITY_PATH    = os.path.join(BASE_DIR, "ieee-fraud-detection", "train_ide
 TEST_TRANSACTION_PATH = os.path.join(BASE_DIR, "ieee-fraud-detection", "test_transaction.csv")
 TEST_IDENTITY_PATH    = os.path.join(BASE_DIR, "ieee-fraud-detection", "test_identity.csv")
 
-aws_uri = "http://ec2-63-180-8-184.eu-central-1.compute.amazonaws.com:5000"
+aws_uri = "http://ec2-35-159-196-177.eu-central-1.compute.amazonaws.com:5000"
