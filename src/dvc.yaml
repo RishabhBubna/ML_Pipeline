@@ -7,7 +7,6 @@ stages:
     - data_ingestion.no_rows
     outs:
     - processedData/raw/full_dataset.csv
-    - Metadata/column_name.json
 
   data_preprocessing:
     cmd: PYTHONPATH=. python data/data_preprocessing.py
@@ -20,7 +19,6 @@ stages:
     - processedData/preprocessed/
     - model/pipeline/transform_rule_Iso.pkl
     - model/pipeline/transform_rule_VAE.pkl
-    - Metadata/feature_name.json
     
 
   train_vae:
