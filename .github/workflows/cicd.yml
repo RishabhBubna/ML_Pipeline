@@ -36,19 +36,9 @@ jobs:
           ISO_PATH=$(jq -r '.ISO_path' src/Metadata/experiment_info.json)
           PIPELINE_PATH=$(jq -r '.pipeline_path' src/Metadata/experiment_info.json)
           
-          aws s3 cp $VAE_PATH src/model/ --recursive
-          aws s3 cp $ISO_PATH src/model/ --recursive
-          aws s3 cp $PIPELINE_PATH src/model/pipeline/ --recursive
-      
-
-      - name: Debug model files
-        run: |
-          echo "=== model/ ===" 
-          ls src/model/
-          echo "=== model/data/ ==="
-          ls src/model/data/
-          echo "=== model/pipeline/ ==="
-          ls src/model/pipeline/
+          aws s3 cp $VAE_PATH/data/model.pth src/model/best_vae.pt
+          aws s3 cp $ISO_PATH/model.pkl src/model/iso_forest.pkl
+          aws s3 cp $PIPELINE_PATH/ src/model/pipeline/ --recursive
 
       - name: Run tests
         run: |
